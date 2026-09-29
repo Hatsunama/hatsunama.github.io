@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tool-Call Output Is Not Task Completion — Hatsunama</title>
+  <meta name="description" content="A Hatsunama research note on what a tool-calling model test measures and what an end-to-end agent evaluation must still verify.">
+  <link rel="canonical" href="https://hatsunama.github.io/research/tool-call-output-vs-task-completion/">
+  <link rel="stylesheet" href="/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Tool-Call Output Is Not Task Completion","datePublished":"2026-09-29","author":{"@type":"Person","name":"Hatsunama","url":"https://hatsunama.github.io/"},"mainEntityOfPage":"https://hatsunama.github.io/research/tool-call-output-vs-task-completion/"}</script>
+</head>
+<body>
+  <header><a class="brand" href="/">Hatsunama</a><nav aria-label="Main"><a href="/who-is-hatsunama/">About</a><a href="/hatsunama-ai/">AI work</a><a href="/ai-research/">Research</a></nav></header>
+  <main>
+    <p class="eyebrow">Research note · September 29, 2026</p>
+    <h1>Tool-Call Output Is Not Task Completion</h1>
+    <p class="lead">A model that produces a valid tool call has cleared one step in an agent workflow. The call still has to be accepted, executed, observed, and checked against the user's requested outcome.</p>
+
+    <h2>What a tool-calling test can show</h2>
+    <p>A tool-calling evaluation can ask whether a model selects a suitable function, supplies parseable arguments, and avoids calls when no tool is needed. Those are useful questions. A structured call makes the model's proposed action easier for surrounding software to inspect and execute.</p>
+    <p>The <a href="https://huggingface.co/Hatsunama/Qwen3-4B-OBLITERATED-toolcall-lora">Hatsunama Qwen3 tool-calling LoRA</a> card reports a 15/16 hold-out result, including 9/9 cases where a call was required and 6/7 where it was not. It also reports BFCL-style numbers and states that these use a simplified AST check rather than the official scorer. The card identifies a remaining miss: an unbound <code>delete_database</code> call can still be emitted.</p>
+    <p>Those results describe a bounded test of model output. They should not be presented as evidence that a deployed agent reliably completed tasks. The named failure case is especially informative: producing a syntactically recognizable tool call can still be the wrong decision.</p>
+
+    <h2>What happens after the call</h2>
+    <p>The agent harness receives the proposed call and decides what to do with it. It must know whether the function exists, whether the arguments meet its schema, whether the action is authorized, and whether execution is safe in the current environment. A call can fail at any of those gates without reaching the external tool.</p>
+    <p>Execution creates another distinction. A tool can return an error. It can run successfully but affect the wrong target. It can report success while the intended state remains unchanged. The agent then needs an observation loop that exposes the result clearly enough to choose a recovery step or stop.</p>
+    <p>Consider a request to update a project file. The model might emit the correct editing function and well-formed arguments. Task completion still requires the correct repository, branch, and path; the intended edit; and a read-back or other check showing that the file now contains the requested change. A plausible final message is not a substitute for that check.</p>
+
+    <h2>A fuller evaluation</h2>
+    <p>For a tool-using AI system, it helps to score several stages separately:</p>
+    <ol><li><strong>Decision:</strong> Was a tool needed, and was the selected tool appropriate?</li><li><strong>Call:</strong> Were the arguments valid and scoped to the right target?</li><li><strong>Execution:</strong> Did the tool run, and what state did it change?</li><li><strong>Observation and recovery:</strong> Did the agent interpret the result and handle failure?</li><li><strong>Outcome:</strong> Did the real task meet the user's criteria?</li></ol>
+    <p>This breakdown turns a single “agent succeeded” score into a diagnosis. If calls are well formed but outcomes fail, the next investigation may concern permissions, tool contracts, execution feedback, or verification. If the model calls a tool when it should abstain, a different intervention is needed.</p>
+    <p>The practical research question is therefore broader than whether a model can print a tool-call object. It is whether the complete system can move from a request to an authorized, observable, verified result.</p>
+
+    <section><h2>About Hatsunama</h2><p>Hatsunama is an independent artificial intelligence researcher and AI systems developer working across AI models, agents, agent harnesses, local AI, tool use, computer-use systems, and AI evaluation. See the <a href="/ai-research/">research overview</a>, <a href="/who-is-hatsunama/">about page</a>, and <a href="/hatsunama-ai/">public AI artifacts</a>.</p></section>
+  </main>
+  <footer>Hatsunama · <a href="https://github.com/Hatsunama">GitHub</a> · <a href="https://huggingface.co/Hatsunama">Hugging Face</a></footer>
+</body>
+</html>
