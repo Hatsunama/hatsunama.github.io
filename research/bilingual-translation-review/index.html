@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A Translation Review That Can Say “Unresolved” — Hatsunama</title>
+  <meta name="description" content="A proposed bilingual translation review workflow with separate meaning and format checks, recorded disagreements, and a reusable synthetic JSONL template.">
+  <link rel="canonical" href="https://hatsunama.github.io/research/bilingual-translation-review/">
+  <link rel="stylesheet" href="/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"A Translation Review That Can Say “Unresolved”","author":{"@type":"Person","name":"Hatsunama","url":"https://hatsunama.github.io/"},"mainEntityOfPage":"https://hatsunama.github.io/research/bilingual-translation-review/"}</script>
+</head>
+<body>
+  <header><a class="brand" href="/">Hatsunama</a><nav aria-label="Main"><a href="/who-is-hatsunama/">About</a><a href="/hatsunama-ai/">AI work</a><a href="/ai-research/">Research</a></nav></header>
+  <main>
+    <p class="eyebrow">Practical method · Bilingual review</p>
+    <h1>A Translation Review That Can Say “Unresolved”</h1>
+    <p class="lead">I'm learning how small local models and their surrounding software can support captions and translation. One useful next step is a review record that leaves room for uncertainty, including uncertainty in the review itself.</p>
+    <p>My <a href="/research/translation-candidate-evidence/">translation candidate note</a> left meaning quality open. This is a proposed way to investigate that question. The downloadable examples contain synthetic source sentences and empty output fields. No bilingual assessment or new model result is being reported here.</p>
+
+    <h2>Freeze the text before judging it</h2>
+    <p>Keep the exact source, language direction, surrounding context, model revision, runtime settings and raw translation together. For captions, also retain the cue identifier and a reference to the authorized recording. If the transcript is uncertain, record that first. A reviewer cannot settle an unclear source by choosing whichever translation sounds better.</p>
+    <p>Use synthetic or properly authorized material. Before sharing a case for review, remove identifying details that are unnecessary and make sure the reviewer is allowed to see the source.</p>
+
+    <h2>Give each judgment its own field</h2>
+    <p>Ask someone competent in both languages to compare the output directly with the source and its context. Record the intended audience or dialect when it affects the judgment. This proposed worksheet separates:</p>
+    <ul>
+      <li><strong>Meaning:</strong> are the people, actions, negation, time, quantities and qualifications preserved?</li>
+      <li><strong>Naturalness:</strong> does the wording fit the intended target-language audience?</li>
+      <li><strong>Mechanical behavior:</strong> did the output meet this candidate's documented format and the harness's parsing requirements?</li>
+    </ul>
+    <p>For meaning and naturalness, use <strong>acceptable</strong>, <strong>needs correction</strong>, <strong>unresolved</strong> or <strong>not reviewed</strong>. Mechanical checks have their own pass, fail or not-tested status. A successful parser check should never fill in a missing meaning judgment.</p>
+
+    <h2>Keep disagreements, then resolve what you can</h2>
+    <p>Where a second bilingual reviewer is available, have them record their judgment before reading the first review. Keep both original judgments. If they disagree, record the exact disputed phrase, each explanation and any context needed to decide. An adjudicated decision belongs in a separate field; it should not overwrite the disagreement.</p>
+    <p>Consider the synthetic source “She said he might arrive tomorrow.” The review needs to account for the reported speaker, the person arriving, the possibility and the time reference. If the context does not identify a pronoun, do not invent an identity to make the case easier to score. Leave the relevant question unresolved.</p>
+    <p>A suggested correction belongs beside the original output. If it is later used for training or prompt development, mark the case as a development example. Keep a separate, previously unseen set for later evaluation.</p>
+
+    <h2>Report coverage as well as decisions</h2>
+    <p>Summarize each language direction separately. Count all selected cases, completed meaning reviews, cases needing correction, unresolved judgments and cases still awaiting review. Say how many reviewers participated and how disagreements were handled. If you calculate a percentage, name its denominator and show the unresolved and unreviewed counts alongside it.</p>
+    <p>A small synthetic review can help locate failures in those cases. It leaves other language directions, dialects, real-world audio conditions and application behavior open.</p>
+
+    <h2>A reusable review record</h2>
+    <p><a href="translation-review-template.jsonl" download>Download the synthetic translation-review template (JSONL)</a>. It contains three English source cases with no generated translations, model identifiers or reviewer conclusions. Choose a target language, fill in the run details, preserve the raw output and add the actual reviews. The empty fields are intentional.</p>
+    <p>Each record keeps source uncertainty, raw output, mechanical checks, individual reviewer notes and adjudication separate. Duplicate the record for a new candidate rather than replacing an older run. It is a starting worksheet, not a validated benchmark or an implemented app feature.</p>
+    <p><strong>Human First AI</strong> means keeping the speaker's meaning central and making it easy for a person to question the output. A useful review should make the remaining unknowns visible.</p>
+    <p><small>Prepared with my AI agent from my stated project direction and existing public notes. This proposed workflow and synthetic template do not report private experiments or independently verified results.</small></p>
+    <p>Related: <a href="/research/translation-intent-and-instruction-boundaries/">Meaning and instruction boundaries</a> · <a href="/research/caption-corrections-and-uncertainty/">Caption corrections</a> · <a href="/research/reproducible-local-ai-comparisons/">Reproducible comparisons</a></p>
+  </main>
+  <footer>Hatsunama · <a href="/ai-research/">Research notes</a></footer>
+</body>
+</html>
