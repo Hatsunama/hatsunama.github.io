@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Building Free Apps with Small Local AI — Hatsunama</title>
+  <meta name="description" content="Hatsunama's current free-app development: BiliPop translation, Finder interface repairs, Caption Action audio checks and Sign to Speak exploration.">
+  <link rel="canonical" href="https://hatsunama.github.io/news/free-apps-small-local-ai-progress/">
+  <link rel="stylesheet" href="/style.css">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Building Free Apps with Small Local AI","datePublished":"2026-10-13","author":{"@type":"Person","name":"Hatsunama","url":"https://hatsunama.github.io/"},"mainEntityOfPage":"https://hatsunama.github.io/news/free-apps-small-local-ai-progress/"}</script>
+</head>
+<body>
+  <header><a class="brand" href="/">Hatsunama</a><nav aria-label="Main"><a href="/who-is-hatsunama/">About</a><a href="/hatsunama-ai/">AI work</a><a href="/ai-research/">Research</a></nav></header>
+  <main>
+    <p class="eyebrow">Work in progress · October 13, 2026</p>
+    <h1>Building Free Apps with Small Local AI</h1>
+    <p class="lead">I'm building practical apps that I intend to give away for free, while learning what small AI models need to do useful work. The current focus is captions, translation, local text search and the everyday app behavior that makes those features usable.</p>
+
+    <h2>BiliPop: broader translation and cleaner copying</h2>
+    <p>BiliPop's translation work is moving beyond its narrow English–Chinese OPUS setup toward my <a href="https://huggingface.co/Hatsunama/caption-studio-hy-mt2-1.8b-q8">Caption Studio Hy-MT2-1.8B Q8 candidate</a>, adapted from Tencent's Hy-MT2-1.8B. Current work includes broader source- and target-language selectors, input/output layout cleanup and copying hashtags without adding extra hash marks.</p>
+    <p>Model downloading and behavior after stopping work or reopening the app are still being tested; the integration is unreleased and translation meaning still needs independent review, as the <a href="/research/translation-candidate-evidence/">candidate evidence note</a> explains.</p>
+
+    <h2>Finder: making text search easier to use</h2>
+    <p>Local-only Finder is a free Android text finder for searching selected UTF-8 notes and transcripts and reading exact source passages. Its current search is keyword-based, with no AI-generated answers.</p>
+    <p>Recent work has focused on interface and keyboard repairs, so typing a search and reading its results work more comfortably. The repaired paths have been checked on two physical devices, with wider coverage still pending.</p>
+
+    <h2>Caption Action: checking the live-audio path</h2>
+    <p><a href="https://github.com/Hatsunama/Caption-Action">Caption Action</a> is my live-caption and translation app project. I'm investigating capture of the intended audio without needing audible speaker playback. A muted-audio diagnostic setup has been verified in a cloud environment; the app's actual capture behavior in that setup still needs to be demonstrated.</p>
+
+    <h2>Sign to Speak: exploring local sign translation</h2>
+    <p>Sign to Speak explores using a live camera to translate ASL/sign-language input into spoken English locally, with no recording or cloud upload as the intended design. It remains research and prototype work: hand tracking alone does not establish sign translation, and reliable recognition has not been demonstrated.</p>
+
+    <h2>Learning through practical apps</h2>
+    <p>These apps give the research concrete questions about training data, preserving meaning, fitting small models onto devices and recovering from interruptions. I'm using the work to investigate what data, training and evaluation each task needs.</p>
+    <p><a href="https://github.com/Hatsunama/Caption-Studio">Caption Studio</a>, the public model artifacts and my proposed <a href="/research/bilingual-translation-review/">bilingual review method</a> are parts readers can inspect. Free apps and useful local-first behavior are the goals; each feature needs its own evidence.</p>
+    <p>The lessons feed into xMilo, my larger mobile AI harness project.</p>
+
+    <p><small>Prepared with my AI agent from current project updates and linked public artifacts. This is a development update, not a release announcement.</small></p>
+  </main>
+  <footer>Hatsunama · <a href="/ai-research/">Research notes</a> · <a href="/">Home</a></footer>
+</body>
+</html>
