@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hatsunama Small-Model Training: What We Know and What Still Needs Testing</title>
+<meta name="description" content="Hatsunama reviews small local AI training results, a completed resource-limit diagnostic, and the open questions for reducing mistakes while preserving user control.">
+<link rel="canonical" href="https://hatsunama.github.io/research/small-model-training-next-questions/">
+<link rel="stylesheet" href="/style.css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hatsunama Small-Model Training: What We Know and What Still Needs Testing">
+<meta property="og:description" content="Hatsunama reviews small local AI training results, a completed resource-limit diagnostic, and the open questions for reducing mistakes while preserving user control.">
+<meta property="og:url" content="https://hatsunama.github.io/research/small-model-training-next-questions/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Hatsunama Small-Model Training: What We Know and What Still Needs Testing","description":"Hatsunama reviews small local AI training results, a completed resource-limit diagnostic, and the open questions for reducing mistakes while preserving user control.","author":{"@type":"Person","name":"Aaron Saunders","alternateName":"Hatsunama","url":"https://hatsunama.github.io/who-is-hatsunama/"},"datePublished":"2026-10-20","dateModified":"2026-10-20","mainEntityOfPage":"https://hatsunama.github.io/research/small-model-training-next-questions/","url":"https://hatsunama.github.io/research/small-model-training-next-questions/"}</script>
+</head>
+<body>
+<header><a class="brand" href="/">Hatsunama</a><nav aria-label="Main"><a href="/who-is-hatsunama/">About</a><a href="/hatsunama-ai/">AI work</a><a href="/ai-research/">Research</a></nav></header>
+<main>
+<p class="eyebrow">Research update · October 20, 2026</p>
+<h1>Hatsunama Small-Model Training: What We Know and What Still Needs Testing</h1>
+<p>By <a href="/who-is-hatsunama/">Aaron Saunders (Hatsunama)</a></p>
+<p class="lead">Hatsunama’s small local AI research has reached a clearer training direction, but not a proven recipe for reliable behavior. I’m Aaron Saunders, a self-taught AI learner and developer working on practical local AI and Human First AI: systems that keep the user in control. The latest tests point to three priorities: separate task learning from output-format gains, repair failures without losing existing skills, and test genuinely new situations.</p>
+<p>The working direction is balanced training examples, enough room for the model to finish, and software checks that prevent mistakes from becoming actions. We still need controlled experiments to learn which changes help, by how much, and where they fail.</p>
+<h2>What the experiments actually show</h2>
+<p>The <a href="/research/small-model-training-coverage/">earlier balanced versus repair-weighted training report</a> records the detailed comparison on LiquidAI/LFM2.5-2.6B. On eight exposed development cases, balanced training passed 8/8, repair-weighted training passed 6/8, and the subsequently recovered untrained baseline passed 4/8 under the original limits. Those eight cases came from two world clusters, with one training seed. They are a development signal, not a general reliability estimate.</p>
+<p>The original model also passed 7/16 separate fresh development cases. Those cases reused the task patterns, and the trained arms were not evaluated on that set. Comparing 8/8 with 7/16 would mix different tests.</p>
+<p>There is an important alternative explanation for part of the gain: training explicitly supervised immediate thinking-section closure. In the untrained baseline, nine of 86 generation turns reached the 512-token cap; eight had not closed that section. Finishing within the available budget could improve task scores without establishing better general reasoning.</p>
+<h2>The completed resource-limit diagnostic</h2>
+<p>The corrected October 20 diagnostic recovered all 12 episodes: the same four selected development cases under three resource settings, with no training. These are four cases repeated across conditions, not 12 independent cases.</p>
+<ul>
+<li>Original limits: 2/4 passed.</li>
+<li>More time only: 2/4 passed.</li>
+<li>More time, output tokens and context together: 3/4 passed.</li>
+</ul>
+<p>The combined expansion rescued one selected permission-related case. The attribution case and another permission case passed in every condition; the empty-result case failed in all three. More room helped one case, but did not fix every failure. Because the last condition changed multiple limits together, this does not isolate a token effect or establish a population-wide ranking.</p>
+<p>The earlier attempt stopped at 8/12 episodes because of a harness timeout-handling defect. The corrected run completed after that defect was repaired. Separating a broken test harness from a model failure matters just as much as comparing scores.</p>
+<h2>Training and software safeguards have different jobs</h2>
+<p>Training can target choosing a useful next step, reading evidence, recovering from an error and knowing when to stop. Permission enforcement, valid tool arguments and proof that an action succeeded also need deterministic checks in the surrounding software. A confident sentence is not a save receipt. A blocked unauthorized attempt still matters when assessing the model, even if the guard prevented the action.</p>
+<p>This is the practical Human First AI goal: keep control with the user and make outcomes verifiable. These synthetic tests do not establish safe real-device control.</p>
+<h2>Three questions before calling this a training recipe</h2>
+<ol>
+<li><strong>Are we improving decisions, or mainly helping the model finish?</strong> A controlled format-and-termination comparator could separate output-efficiency gains from task-learning gains.</li>
+<li><strong>Can we repair failures without losing what already works?</strong> Earlier Qwen recovery-focused training improved retries while ordinary and safety-related behavior regressed. The LFM repair-weighted comparison also changed task-family exposure together. A controlled failure-targeted study should preserve ordinary-task coverage rather than assume that more repair examples are better.</li>
+<li><strong>Does it work beyond familiar examples?</strong> Genuinely new scenario families and multiple seeds are needed. The locked 96-case final test remains untouched and should stay separate from development and tuning.</li>
+</ol>
+<p>These are proposed studies, not completed experiments or a finalized protocol. This post does not announce a new training run.</p>
+<h2>What would count as better</h2>
+<p>Task completion, unauthorized attempts, false success claims, unnecessary permission questions and latency need separate measurements. A higher completion score would not excuse a worse permission boundary. The evaluation should also distinguish what the model attempted from what software guards allowed.</p>
+<p>Reproducibility needs improvement too. The earlier trained adapters were discarded by temporary-directory cleanup, even though logs were retained. Future comparisons need actual saved checkpoints, pinned configurations and clean review packets, so the same model can be tested again.</p>
+<p>Two independent model-based reviews agreed on all 12 diagnostic outcomes. They were not human reviews, and timing and machine fields remained visible, so blinding was imperfect. This article was prepared with my AI agent from recovered logs and those reviews. The results are publisher-reported, not an independent replication.</p>
+<p>The useful progress is a clearer set of failure causes and testable questions. We have a direction for reducing mistakes. We still have to test whether it holds up.</p>
+<h2>Run references and related work</h2>
+<p><a href="https://huggingface.co/jobs/Hatsunama/6ad776c75275124786e17780">Completed resource-limit diagnostic</a> · <a href="https://huggingface.co/jobs/Hatsunama/6ad524cc5ccb47ba0f7c72d1">Recovered original-model baseline</a>. These provider job pages may require sign-in; the bounded outcomes and limitations are stated above so access is not needed to understand the claims.</p>
+<p><a href="/research/small-model-training-coverage/">Balanced versus repair-weighted results</a> · <a href="/research/training-and-harness-interface/">Training and harness interfaces</a> · <a href="/research/reproducible-local-ai-comparisons/">Reproducible local AI comparisons</a> · <a href="/hatsunama-ai/">Hatsunama’s AI work</a></p>
+</main>
+<footer>Hatsunama · <a href="/ai-research/">Research notes</a></footer>
+</body>
+</html>
